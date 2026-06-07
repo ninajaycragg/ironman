@@ -58,8 +58,9 @@
   .top .line{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
   .top .mark{font-weight:700;font-size:.94rem;letter-spacing:.16em;text-transform:uppercase}
   .top .where{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .top .intro{font-size:.98rem;font-weight:400;line-height:1.55;margin-top:1.1rem;max-width:50ch;color:var(--muted);letter-spacing:0}
-  .top .intro b{font-weight:500;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .top .intro{margin-top:1.4rem;max-width:52ch}
+  .top .ded{display:block;color:var(--ink);font-size:clamp(1.05rem,2.6vw,1.28rem);font-weight:500;line-height:1.42;letter-spacing:-.012em;max-width:30ch}
+  .top .exp{display:block;color:var(--muted);font-size:.95rem;line-height:1.55;margin-top:.75rem;max-width:52ch}
   .top .rule{height:1px;background:var(--ink);margin-top:clamp(2.2rem,6vh,3.4rem)}
 
   /* ---------- section ---------- */
@@ -123,28 +124,14 @@
 
   <header class="top">
     <div class="line"><span class="mark">Mike Cragg</span><span class="where">Vancouver · 49.28°N</span></div>
-    <p class="intro reveal">For my dad — an adventurer with a restless, original mind. A few things worth <b>exploring</b>.</p>
+    <p class="intro reveal">
+      <span class="ded">Dad — I love you, I look up to you, and I love the way you see the world.</span>
+      <span class="exp">So here's a place for the things you'd love — to read, hear, and watch. The kind of stuff you're always sending me.</span>
+    </p>
     <div class="rule reveal"></div>
   </header>
 
-  <main>
-    <section class="group wrap first" id="s-read" data-name="Read">
-      <div class="sechead"><span class="n">01</span><h2>Read</h2><span class="meta" id="m-read"></span></div>
-      <div class="cards" id="reads"></div>
-    </section>
-    <section class="group wrap" id="s-listen" data-name="Listen">
-      <div class="sechead"><span class="n">02</span><h2>Listen</h2><span class="meta" id="m-listen"></span></div>
-      <div class="cards" id="listen"></div>
-    </section>
-    <section class="group wrap" id="s-watch" data-name="Watch">
-      <div class="sechead"><span class="n">03</span><h2>Watch</h2><span class="meta" id="m-watch"></span></div>
-      <div class="cards" id="watch"></div>
-    </section>
-    <section class="group wrap" id="s-sport" data-name="Sport">
-      <div class="sechead"><span class="n">04</span><h2>Sport</h2><span class="meta" id="m-sport"></span></div>
-      <div class="cards" id="sport"></div>
-    </section>
-  </main>
+  <main id="main"></main>
 
   <footer>
     <div class="row"><span class="mark">Mike Cragg</span><span class="meta">No. 87 · <a href="versions.html">versions</a></span></div>
@@ -155,6 +142,7 @@
   <script>
     var G = window.GIFT;
     var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+    var LIMIT = 4;
 
     function readCard(r){
       var a = document.createElement("a");
@@ -186,61 +174,61 @@
       return card;
     }
 
-    var reads = document.getElementById("reads");
-    G.reads.forEach(function(r){ reads.appendChild(readCard(r)); });
-    document.getElementById("m-read").textContent = G.reads.length + " essays";
-
-    var counts = {sport:0, listen:0, watch:0};
-    ["sport","listen","watch"].forEach(function(sec){
-      var el = document.getElementById(sec);
-      (G.media||[]).filter(function(m){return m.section===sec;}).forEach(function(m){ el.appendChild(mediaCard(m)); counts[sec]++; });
-    });
-    document.getElementById("m-sport").textContent = counts.sport + " items";
-    document.getElementById("m-listen").textContent = counts.listen + " items";
-    document.getElementById("m-watch").textContent = counts.watch + " items";
-
-    // stagger card reveals within each section
-    document.querySelectorAll(".cards").forEach(function(c){
-      Array.prototype.forEach.call(c.children, function(card, i){ card.setAttribute("data-delay", Math.min(i,5)*70); });
-    });
-
-    // show only a few per section, with a "show more"
-    function applyLimit(containerId, LIMIT){
-      var c = document.getElementById(containerId);
-      var cards = Array.prototype.slice.call(c.children);
-      if(cards.length <= LIMIT) return;
-      cards.slice(LIMIT).forEach(function(card){ card.classList.add("more-hidden"); });
-      var btn = document.createElement("button");
-      btn.type = "button"; btn.className = "showmore";
-      btn.innerHTML = 'Show '+(cards.length-LIMIT)+' more <span class="ar">↓</span>';
-      btn.addEventListener("click", function(){
-        cards.slice(LIMIT).forEach(function(card){ card.classList.remove("more-hidden"); });
-        btn.remove();
-        if(window.__initReveals) window.__initReveals();
-      });
-      c.parentNode.appendChild(btn);
-    }
-    applyLimit("reads", 3); applyLimit("sport", 3); applyLimit("listen", 3); applyLimit("watch", 3);
-
-    // build the scroll trail
-    var sections = [["s-read","Read"],["s-listen","Listen"],["s-watch","Watch"],["s-sport","Sport"]];
+    var main = document.getElementById("main");
     var trail = document.getElementById("trail");
-    sections.forEach(function(s,i){
-      var a = document.createElement("a");
-      a.className = "stop"; a.href = "#"+s[0];
-      a.innerHTML = '<span class="dot"></span><span class="slbl">'+String(i+1).padStart(2,"0")+'  '+s[1]+'</span>';
-      trail.appendChild(a);
+
+    G.sections.forEach(function(sec, si){
+      var items = G.items.filter(function(it){ return it.section === sec.id; });
+      if (!items.length) return;
+      var n = String(si+1).padStart(2,"0");
+
+      var section = document.createElement("section");
+      section.className = "group wrap" + (si===0 ? " first" : "");
+      section.id = "s-" + sec.id;
+      section.setAttribute("data-name", sec.name);
+      section.innerHTML =
+        '<div class="sechead"><span class="n">'+n+'</span><h2>'+sec.name+'</h2>' +
+        '<span class="meta">'+(sec.blurb || (items.length+" items"))+'</span></div>' +
+        '<div class="cards"></div>';
+      var cards = section.querySelector(".cards");
+      items.forEach(function(it, i){
+        var card = (it.kind === "read") ? readCard(it) : mediaCard(it);
+        card.setAttribute("data-delay", Math.min(i, 5) * 70);
+        if (i >= LIMIT) card.classList.add("more-hidden");
+        cards.appendChild(card);
+      });
+      if (items.length > LIMIT){
+        var btn = document.createElement("button");
+        btn.type = "button"; btn.className = "showmore";
+        btn.innerHTML = 'Show '+(items.length-LIMIT)+' more <span class="ar">↓</span>';
+        btn.addEventListener("click", function(){
+          cards.querySelectorAll(".more-hidden").forEach(function(c){ c.classList.remove("more-hidden"); });
+          btn.remove();
+          if (window.__initReveals) window.__initReveals();
+        });
+        section.appendChild(btn);
+      }
+      main.appendChild(section);
+
+      var stop = document.createElement("a");
+      stop.className = "stop"; stop.href = "#s-" + sec.id;
+      stop.innerHTML = '<span class="dot"></span><span class="slbl">'+n+'  '+sec.name+'</span>';
+      trail.appendChild(stop);
     });
-    var stops = trail.querySelectorAll(".stop");
-    var byId = {};
-    sections.forEach(function(s,i){ byId[s[0]] = stops[i]; });
+
+    // active-section highlight on the scroll trail
+    var stops = {};
+    Array.prototype.forEach.call(trail.querySelectorAll(".stop"), function(s){ stops[s.getAttribute("href").slice(1)] = s; });
     if ("IntersectionObserver" in window){
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(e){
-          if(e.isIntersecting){ stops.forEach(function(x){x.classList.remove("active");}); var st=byId[e.target.id]; if(st) st.classList.add("active"); }
+          if(e.isIntersecting){
+            Object.keys(stops).forEach(function(k){ stops[k].classList.remove("active"); });
+            if (stops[e.target.id]) stops[e.target.id].classList.add("active");
+          }
         });
       }, { rootMargin:"-45% 0px -45% 0px" });
-      sections.forEach(function(s){ var el=document.getElementById(s[0]); if(el) io.observe(el); });
+      Object.keys(stops).forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); });
     }
 
     if (window.__initReveals) window.__initReveals();
