@@ -58,8 +58,8 @@
   .top .line{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
   .top .mark{font-weight:700;font-size:.94rem;letter-spacing:.16em;text-transform:uppercase}
   .top .where{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .top .intro{font-size:clamp(1.5rem,4.4vw,2.4rem);font-weight:600;letter-spacing:-.025em;line-height:1.15;margin-top:clamp(2.2rem,7vh,4rem);max-width:20ch;color:var(--ink)}
-  .top .intro b{font-weight:600;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .top .intro{font-size:.98rem;font-weight:400;line-height:1.55;margin-top:1.1rem;max-width:50ch;color:var(--muted);letter-spacing:0}
+  .top .intro b{font-weight:500;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   .top .rule{height:1px;background:var(--ink);margin-top:clamp(2.2rem,6vh,3.4rem)}
 
   /* ---------- section ---------- */
@@ -123,7 +123,7 @@
 
   <header class="top">
     <div class="line"><span class="mark">Mike Cragg</span><span class="where">Vancouver · 49.28°N</span></div>
-    <p class="intro reveal">A <b>content explorer</b>, themed around the things you're into.</p>
+    <p class="intro reveal">For my dad — an adventurer with a restless, original mind. A few things worth <b>exploring</b>.</p>
     <div class="rule reveal"></div>
   </header>
 
@@ -132,17 +132,17 @@
       <div class="sechead"><span class="n">01</span><h2>Read</h2><span class="meta" id="m-read"></span></div>
       <div class="cards" id="reads"></div>
     </section>
-    <section class="group wrap" id="s-sport" data-name="Sport">
-      <div class="sechead"><span class="n">02</span><h2>Sport</h2><span class="meta" id="m-sport"></span></div>
-      <div class="cards" id="sport"></div>
-    </section>
     <section class="group wrap" id="s-listen" data-name="Listen">
-      <div class="sechead"><span class="n">03</span><h2>Listen</h2><span class="meta" id="m-listen"></span></div>
+      <div class="sechead"><span class="n">02</span><h2>Listen</h2><span class="meta" id="m-listen"></span></div>
       <div class="cards" id="listen"></div>
     </section>
     <section class="group wrap" id="s-watch" data-name="Watch">
-      <div class="sechead"><span class="n">04</span><h2>Watch</h2><span class="meta" id="m-watch"></span></div>
+      <div class="sechead"><span class="n">03</span><h2>Watch</h2><span class="meta" id="m-watch"></span></div>
       <div class="cards" id="watch"></div>
+    </section>
+    <section class="group wrap" id="s-sport" data-name="Sport">
+      <div class="sechead"><span class="n">04</span><h2>Sport</h2><span class="meta" id="m-sport"></span></div>
+      <div class="cards" id="sport"></div>
     </section>
   </main>
 
@@ -223,7 +223,7 @@
     applyLimit("reads", 3); applyLimit("sport", 3); applyLimit("listen", 3); applyLimit("watch", 3);
 
     // build the scroll trail
-    var sections = [["s-read","Read"],["s-sport","Sport"],["s-listen","Listen"],["s-watch","Watch"]];
+    var sections = [["s-read","Read"],["s-listen","Listen"],["s-watch","Watch"],["s-sport","Sport"]];
     var trail = document.getElementById("trail");
     sections.forEach(function(s,i){
       var a = document.createElement("a");
