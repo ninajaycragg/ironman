@@ -5,9 +5,9 @@ window.GIFT = {
 
   /* ---------- DISPATCH ---------- */
   dispatch: {
-    kicker: "Dispatch",
-    title: "Moved by thought alone",
-    standfirst: "Cursors, drawings, and robotic arms — moved by thought alone.",
+    kicker: "Neuroscience",
+    title: "Neuralink's first year of patients",
+    standfirst: "Cursors, drawings, and a robotic arm — moved by thought alone.",
     body: [
       "In 2024, Audrey Crews — paralyzed from the neck down since she was sixteen — used a Neuralink implant to move a cursor and write her name on a screen for the first time in twenty years. She now makes digital art with her mind.",
       "A second patient, known as Alex, used the same interface to control a robotic arm after a spinal-cord injury — writing and drawing again, with individual fingers decoded in real time.",
@@ -96,4 +96,11 @@ window.GIFT = {
       ],
     },
   },
+
+  /* ---------- WATCH ---------- */
+  watch: [
+    { vein:"Film", title:"Elsewhere", who:"Arc'teryx", year:"2026",
+      note:"A self-propelled freeride expedition in the high Swiss Alps.",
+      url:"https://www.youtube.com/watch?v=gLi6omSIqDc" },
+  ],
 };
