@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aesthetics — for Dad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..420&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<style>
+  .head{padding:clamp(4rem,12vh,8rem) 0 2.5rem;text-align:center}
+  .head .eyebrow{display:block;margin-bottom:1.2rem}
+  .head h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:320}
+  .head .sub{font-family:var(--read);font-style:italic;color:var(--text-muted);font-size:clamp(1.05rem,2vw,1.35rem);margin:1rem auto 0;max-width:42ch}
+  .grid{display:grid;gap:clamp(1rem,2.4vw,1.6rem);grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding-bottom:2rem}
+  .card{position:relative;display:block;min-height:300px;border-radius:6px;overflow:hidden;text-decoration:none;
+    border:1px solid var(--border);transition:transform .5s var(--ease-out-soft),box-shadow .5s var(--ease-out-soft)}
+  .card:hover{transform:translateY(-5px);box-shadow:0 26px 56px -30px rgba(26,35,54,.5)}
+  .card .swatch{height:120px;position:relative;overflow:hidden}
+  .card .body{padding:1.4rem 1.5rem 1.6rem}
+  .card h2{font-size:1.7rem;margin-bottom:.4rem}
+  .card .desc{font-size:.9rem;color:var(--text-muted);line-height:1.55}
+  .card .go{margin-top:1rem;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+  .card .go::after{content:" →";transition:margin .4s var(--ease-out-soft);display:inline-block}
+  .card:hover .go::after{margin-left:.35rem}
+
+  /* swatch previews */
+  .sw-noc{background:radial-gradient(70% 90% at 70% 20%,rgba(201,167,124,.4),transparent 60%),linear-gradient(180deg,#242C3C,#0E1320)}
+  .sw-alp{background:linear-gradient(180deg,#dbe7ec,#cfe0e7 55%,#eef3f3)}
+  .sw-alp::after{content:"";position:absolute;inset:0;background:
+    linear-gradient(135deg,transparent 60%,#365a72 60% 64%,transparent 64%),
+    linear-gradient(-135deg,transparent 55%,#5f8298 55% 60%,transparent 60%)}
+  .sw-blu{background:#ECE9E0;background-image:linear-gradient(rgba(38,50,74,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(38,50,74,.12) 1px,transparent 1px);background-size:18px 18px}
+  .sw-blu::after{content:"FIG.";position:absolute;left:14px;bottom:10px;font-family:"Inter";font-size:.7rem;letter-spacing:.2em;color:#26324A}
+  .sw-zen{background:#F3EEE3;display:grid;place-items:center}
+  .sw-zen::after{content:"";width:64px;height:64px;border:3px solid #2A2520;border-radius:50%;border-right-color:transparent;transform:rotate(28deg)}
+  .sw-zen .seal{position:absolute;right:16px;bottom:12px;width:22px;height:22px;border:1.5px solid #B5462F;border-radius:4px}
+
+  .backrow{text-align:center;padding:1rem 0 5rem}
+  .backrow a{color:var(--text-muted);text-decoration:none;font-size:.84rem;letter-spacing:.04em}
+  .backrow a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+  <header class="head wrap">
+    <span class="eyebrow">For Dad · aesthetics</span>
+    <h1>Four ways it could feel</h1>
+    <p class="sub">Same gift, same words — four different moods. Each one plays a podcast right on the page. Wander in.</p>
+  </header>
+
+  <main class="wrap">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <div class="backrow"><a href="index.html">← back to the four structures</a></div>
+
+  <script src="assets/reveal.js"></script>
+  <script>
+    var looks=[
+      {href:"look-nocturne.html",name:"Nocturne",sw:"sw-noc",desc:"Dark indigo, museum-at-night. Bone serif, brass light. Moody and luxurious."},
+      {href:"look-alpine.html",name:"Alpine",sw:"sw-alp",desc:"Cool, airy, photographic. Glacier blues, white space, peaks reflected in a lake."},
+      {href:"look-blueprint.html",name:"Blueprint",sw:"sw-blu",desc:"Architect's drafting paper. Grid, hairlines, mono labels. Precise and clever."},
+      {href:"look-zen.html",name:"Zen",sw:"sw-zen",desc:"Warm Japandi calm. Rice-paper, an ensō, a vermilion seal. Pure stillness."},
+    ];
+    var grid=document.getElementById("grid");
+    looks.forEach(function(l,i){
+      var a=document.createElement("a");a.href=l.href;a.className="card reveal";a.setAttribute("data-delay",i*80);
+      var extra = l.sw==="sw-zen" ? '<span class="seal"></span>' : '';
+      a.innerHTML='<div class="swatch '+l.sw+'">'+extra+'</div>'+
+        '<div class="body"><h2>'+l.name+'</h2><p class="desc">'+l.desc+'</p><div class="go">Step in</div></div>';
+      grid.appendChild(a);
+    });
+    if(window.__initReveals)window.__initReveals();
+  </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Study — for Dad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..420&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<style>
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem var(--gutter); mix-blend-mode: multiply; }
+  .nav a { text-decoration: none; font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); }
+  .nav .home:hover { color: var(--accent); }
+
+  .hero { min-height: 92vh; display: grid; align-items: center; position: relative; overflow: hidden; }
+  .hero .wrap { position: relative; z-index: 2; }
+  .hero .eyebrow { display:block; margin-bottom: 1.6rem; }
+  .hero h1 { font-size: clamp(3rem, 8.5vw, 7.2rem); font-weight: 310; max-width: 16ch; }
+  .hero .lede { font-family: var(--read); font-style: italic; font-weight: 320;
+    font-size: clamp(1.15rem, 2.3vw, 1.55rem); color: var(--text-muted); margin-top: 1.6rem; max-width: 40ch; }
+  .hero .desk { position: absolute; left: 0; right: 0; bottom: 0; height: 34vh; z-index: 1; }
+  .scrollcue { position: absolute; bottom: 1.6rem; left: 50%; transform: translateX(-50%); z-index: 3;
+    font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--text-muted); }
+
+  section { padding: clamp(4rem, 12vh, 9rem) 0; }
+  .sechead { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 2.8rem; }
+  .sechead .n { font-family: var(--serif); font-size: 1.1rem; color: var(--wood); }
+  .sechead h2 { font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 340; }
+  .sechead .meta { margin-left: auto; max-width: 24ch; text-align: right; }
+
+  /* reading shelf — objects you open */
+  .shelf { border-top: 1px solid var(--border); }
+  .read { border-bottom: 1px solid var(--border); }
+  .read button { all: unset; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto;
+    gap: 1.4rem; align-items: baseline; width: 100%; padding: 1.5rem 0; }
+  .read .vein { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--wood); width: 13ch; }
+  .read .ttl { font-family: var(--serif); font-size: clamp(1.3rem, 2.6vw, 1.9rem); font-weight: 360; line-height: 1.15; }
+  .read .by { display: block; font-family: var(--sans); font-size: .82rem; color: var(--text-muted); margin-top: .35rem; letter-spacing: .02em; }
+  .read .plus { font-family: var(--serif); font-size: 1.6rem; color: var(--text-muted); transition: transform .5s var(--ease-out-soft); }
+  .read[open] .plus { transform: rotate(45deg); }
+  .read .panel { overflow: hidden; max-height: 0; transition: max-height .6s var(--ease-in-out); }
+  .read[open] .panel { max-height: 260px; }
+  .read .panel-in { padding: 0 0 1.7rem clamp(0px, 14.4ch, 14.4ch); }
+  .read .note { font-family: var(--read); font-size: 1.12rem; line-height: 1.65; max-width: 56ch; color: var(--text); }
+  .read .open-link { margin-top: 1rem; display:inline-block; font-size:.8rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); text-decoration:none; }
+  .read .open-link:hover { color: var(--accent-deep); }
+
+  /* listening corner */
+  .listen { background: var(--surface); }
+  .corner { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .pods { display: flex; flex-direction: column; }
+  .pod { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center;
+    padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
+  .pod:first-child { border-top: 1px solid var(--border); }
+  .pod .show { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); }
+  .pod .pt { font-family: var(--serif); font-size: 1.25rem; font-weight: 360; margin-top: .2rem; }
+  .pod .who { font-size: .85rem; color: var(--text-muted); margin-top: .15rem; }
+  .pod .pn { font-family: var(--read); font-size: .95rem; color: var(--text); margin-top: .5rem; max-width: 48ch; opacity: .9; }
+
+  .mix { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1.6rem 1.5rem; }
+  .mix h3 { font-size: 1.5rem; }
+  .mix .ms { font-size: .9rem; color: var(--text-muted); margin: .3rem 0 1rem; }
+  .mix ol { list-style: none; counter-reset: t; columns: 1; }
+  .mix li { counter-increment: t; display: grid; grid-template-columns: 1.6rem 1fr; gap: .5rem;
+    padding: .32rem 0; font-size: .92rem; border-bottom: 1px dotted var(--border); }
+  .mix li::before { content: counter(t,decimal-leading-zero); color: var(--wood); font-family: var(--serif); font-size: .82rem; }
+  .mix li .ar { color: var(--text-muted); }
+  .mix .chip { margin-top: 1.2rem; }
+
+  /* dispatch — a letter on the desk */
+  .dispatch { background: var(--accent); color: var(--d-text); }
+  .dispatch .narrow { text-align: left; }
+  .dispatch .eyebrow { color: var(--d-accent); }
+  .dispatch h2 { color: var(--d-text); font-size: clamp(2.2rem, 5vw, 3.8rem); margin: 1rem 0 1.6rem; font-weight: 320; }
+  .dispatch .stand { font-family: var(--read); font-style: italic; font-size: clamp(1.2rem,2.4vw,1.6rem);
+    line-height: 1.5; color: var(--d-text); opacity: .92; margin-bottom: 2rem; max-width: 30ch; }
+  .dispatch p.b { font-family: var(--read); font-size: 1.15rem; line-height: 1.85; color: var(--d-text);
+    opacity: .94; max-width: 60ch; margin-bottom: 1.3rem; }
+  .dispatch .src { font-size: .82rem; color: var(--d-muted); margin-top: 2rem; letter-spacing: .02em; }
+  .dispatch em { color: var(--d-accent); font-style: italic; }
+
+  footer { text-align: center; padding: 4rem 0 5rem; color: var(--text-muted); font-size: .82rem; }
+  footer .rule { max-width: 60px; margin: 0 auto 1.4rem; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 760px) {
+    .corner { grid-template-columns: 1fr; }
+    .read button { grid-template-columns: 1fr auto; }
+    .read .vein { display: none; }
+    .read .panel-in { padding-left: 0; }
+    .sechead .meta { display: none; }
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="home">← the rooms</a>
+    <a href="#dispatch" class="home">a dispatch</a>
+  </nav>
+
+  <header class="hero vignette">
+    <div class="wrap">
+      <span class="eyebrow">The Study · for you</span>
+      <h1 class="display">A quiet room, with a few good things in it.</h1>
+      <p class="lede">No notifications. No accounts. Just things I gathered because they reminded me of you. Stay as long as you like.</p>
+    </div>
+    <div class="desk wood vignette" aria-hidden="true"></div>
+    <div class="scrollcue">scroll ↓</div>
+  </header>
+
+  <main class="wrap">
+    <!-- READING SHELF -->
+    <section id="read">
+      <div class="sechead">
+        <span class="n">i</span>
+        <h2>The reading shelf</h2>
+        <p class="meta caption">A handful of essays. Open one to see why I chose it.</p>
+      </div>
+      <div class="shelf" id="shelf"></div>
+    </section>
+  </main>
+
+  <!-- LISTENING -->
+  <section class="listen" id="listen">
+    <div class="wrap">
+      <div class="sechead">
+        <span class="n">ii</span>
+        <h2>The listening corner</h2>
+        <p class="meta caption">Things to think about on a long run — and a mix from me.</p>
+      </div>
+      <div class="corner">
+        <div class="pods" id="pods"></div>
+        <aside class="mix reveal" id="mix"></aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISPATCH -->
+  <section class="dispatch" id="dispatch">
+    <div class="narrow">
+      <span class="eyebrow" id="d-kick"></span>
+      <h2 id="d-title"></h2>
+      <p class="stand" id="d-stand"></p>
+      <div id="d-body"></div>
+      <p class="src" id="d-src"></p>
+    </div>
+  </section>
+
+  <footer>
+    <hr class="rule" />
+    <p>The Study · one of four rooms. <a href="index.html">See the others →</a></p>
+  </footer>
+
+  <script src="assets/content.js"></script>
+  <script src="assets/reveal.js"></script>
+  <script>
+    var G = window.GIFT;
+
+    // reading shelf
+    var shelf = document.getElementById("shelf");
+    G.reads.forEach(function (r, i) {
+      var d = document.createElement("details");
+      d.className = "read reveal"; d.setAttribute("data-delay", i * 60);
+      d.innerHTML =
+        '<summary style="list-style:none"><button type="button" tabindex="-1">' +
+          '<span class="vein">'+r.vein+'</span>' +
+          '<span><span class="ttl">'+r.title+'</span>' +
+            '<span class="by">'+r.author+' · '+r.source+' · '+r.year+'</span></span>' +
+          '<span class="plus">+</span>' +
+        '</button></summary>' +
+        '<div class="panel"><div class="panel-in">' +
+          '<p class="note">“'+r.note+'”</p>' +
+          '<a class="open-link link" href="'+r.url+'" target="_blank" rel="noopener">Read it →</a>' +
+        '</div></div>';
+      // native <details> toggles; intercept the inner button so the whole row toggles
+      d.querySelector('button').addEventListener('click', function (e) {
+        e.preventDefault(); d.open = !d.open;
+      });
+      shelf.appendChild(d);
+    });
+
+    // podcasts
+    var pods = document.getElementById("pods");
+    G.listening.podcasts.forEach(function (p, i) {
+      var a = document.createElement("a");
+      a.href = p.url; a.target = "_blank"; a.rel = "noopener";
+      a.className = "pod reveal"; a.style.textDecoration = "none"; a.setAttribute("data-delay", i * 60);
+      a.innerHTML =
+        '<div><div class="show">'+p.show+'</div>' +
+        '<div class="pt">'+p.title+'</div>' +
+        '<div class="who">'+p.who+'</div>' +
+        '<div class="pn">'+p.note+'</div></div>' +
+        '<span class="chip">'+window.PLAY_ICON+'Play</span>';
+      pods.appendChild(a);
+    });
+
+    // mix
+    var w = G.listening.workout, mix = document.getElementById("mix");
+    var lis = w.tracks.map(function (t) { return '<li><span>'+t[0]+'</span><span class="ar">'+t[1]+'</span></li>'; }).join("");
+    mix.innerHTML =
+      '<h3>'+w.title+'</h3><p class="ms">'+w.subtitle+'</p><ol>'+lis+'</ol>' +
+      '<a class="chip" href="'+w.url+'" target="_blank" rel="noopener">'+window.PLAY_ICON+'Open the mix</a>';
+
+    // dispatch
+    var ds = G.dispatch;
+    document.getElementById("d-kick").textContent = ds.kicker;
+    document.getElementById("d-title").textContent = ds.title;
+    document.getElementById("d-stand").textContent = ds.standfirst;
+    document.getElementById("d-body").innerHTML = ds.body.map(function (p) { return '<p class="b">'+p+'</p>'; }).join("");
+    document.getElementById("d-src").textContent = ds.source;
+
+    if (window.__initReveals) window.__initReveals();
+  </script>
+</body>
+</html>

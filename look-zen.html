@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zen — for Dad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..420&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F3EEE3; --paper:#EBE4D6; --ink:#2A2520; --muted:#7A7264;
+    --seal:#B5462F; --sage:#8A9081; --line:#DBD3C3;
+    --serif:"Newsreader",Georgia,serif; --sans:"Inter",sans-serif;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:1.12rem;line-height:1.8;font-weight:380}
+  img,svg{display:block;max-width:100%} a{color:inherit}
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.05;mix-blend-mode:multiply}
+  .wrap{max-width:760px;margin:0 auto;padding:0 clamp(1.5rem,6vw,3rem);text-align:center}
+  .left{text-align:left}
+  .label{font-family:var(--sans);font-size:.68rem;font-weight:500;letter-spacing:.34em;text-transform:uppercase;color:var(--sage)}
+  h1,h2,h3{font-family:var(--serif);font-weight:340;line-height:1.12}
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+
+  .nav{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;justify-content:space-between;padding:1.4rem clamp(1.5rem,5vw,3rem)}
+  .nav a{font-family:var(--sans);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .nav a:hover{color:var(--seal)}
+
+  .hero{min-height:100vh;display:grid;place-items:center;position:relative}
+  .enso{width:min(46vw,330px);margin:0 auto 2.5rem;opacity:.92}
+  .enso path{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round}
+  .hero h1{font-size:clamp(2.6rem,6vw,4.6rem);font-weight:300;letter-spacing:-.01em}
+  .hero .lede{font-style:italic;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--muted);margin-top:1.4rem;max-width:30ch;margin-inline:auto;font-weight:340}
+  .scrollcue{position:absolute;bottom:1.6rem;left:50%;transform:translateX(-50%);font-family:var(--sans);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+
+  section{padding:clamp(5rem,15vh,11rem) 0}
+  .divider{width:1px;height:64px;background:var(--line);margin:0 auto}
+  .sec-label{display:block;margin-bottom:2.6rem;text-align:center}
+
+  /* dispatch — centered, breathing */
+  .dispatch [data-d=title]{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:300;margin:1rem 0 2rem}
+  .dispatch [data-d=stand]{font-style:italic;font-size:clamp(1.4rem,3vw,2rem);color:var(--ink);max-width:26ch;margin:0 auto 2.6rem;line-height:1.4;font-weight:340}
+  .dispatch [data-d=body]{text-align:left}
+  .dispatch [data-d=body] p{font-size:1.18rem;line-height:1.95;margin-bottom:1.5rem;color:var(--ink)}
+  .dispatch em{font-style:italic;color:var(--seal)}
+  .dispatch [data-d=src]{font-family:var(--sans);font-size:.76rem;color:var(--muted);margin-top:2.4rem}
+  .seal{display:inline-grid;place-items:center;width:54px;height:54px;border:1.5px solid var(--seal);color:var(--seal);
+    border-radius:8px;font-family:var(--serif);font-size:1.4rem;margin:2.4rem auto 0;transform:rotate(-4deg)}
+
+  /* reading — a quiet centered list */
+  .read{display:block;text-decoration:none;color:var(--ink);padding:2rem 0;border-top:1px solid var(--line);text-align:center}
+  #reads .read:last-child{border-bottom:1px solid var(--line)}
+  .read .vein{font-family:var(--sans);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:.7rem}
+  .rbody,.pbody{display:block}
+  .read .ttl{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:340;line-height:1.15;display:block;transition:color .5s var(--ease)}
+  .read:hover .ttl{color:var(--seal)}
+  .read .by{font-family:var(--sans);font-size:.74rem;color:var(--muted);display:block;margin-top:.5rem;letter-spacing:.02em}
+  .read .note{font-style:italic;font-size:1.12rem;color:var(--muted);display:block;margin:1rem auto 0;max-width:48ch;line-height:1.6}
+  .read .more{display:inline-block;margin-top:1rem;font-family:var(--sans);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--seal)}
+
+  /* listening — minimal */
+  .player{border:1px solid var(--line);border-radius:10px;padding:1.4rem;margin:0 auto 2.4rem;max-width:560px;background:var(--paper)}
+  .player .l{font-family:var(--sans);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:.9rem}
+  .player iframe{border-radius:9px;display:block}
+  #pods{max-width:600px;margin:0 auto}
+  .pod{display:block;text-decoration:none;color:var(--ink);padding:1.4rem 0;border-top:1px solid var(--line);position:relative;text-align:center}
+  #pods .pod:last-child{border-bottom:1px solid var(--line)}
+  .pod .show{font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sage)}
+  .pod .pt{font-size:1.4rem;font-weight:340;display:block;margin-top:.3rem}
+  .pod .who{font-family:var(--sans);font-size:.74rem;color:var(--muted);display:block;margin-top:.2rem}
+  .pod .note{display:none}
+  .pod .play{display:inline-grid;place-items:center;width:38px;height:38px;border:1px solid var(--sage);border-radius:50%;margin-top:.9rem;transition:.4s var(--ease)}
+  .pod .play svg{width:12px;height:12px;fill:var(--sage)}
+  .pod:hover .play{border-color:var(--seal);background:var(--seal)}.pod:hover .play svg{fill:var(--bg)}
+
+  .mix{max-width:560px;margin:3rem auto 0;border:1px solid var(--line);border-radius:10px;padding:1.8rem;background:var(--paper);text-align:left}
+  .mix h3{font-size:1.5rem;font-weight:340;text-align:center}.mix .ms{font-family:var(--sans);font-size:.78rem;color:var(--muted);margin:.4rem 0 1.2rem;text-align:center}
+  .mix .tracks{list-style:none;column-count:2;column-gap:2rem}
+  .mix .tracks li{padding:.3rem 0;font-size:.92rem;break-inside:avoid}
+  .mix .tracks .ta{font-family:var(--sans);font-size:.78rem;color:var(--muted);display:block}
+  .chip{display:inline-flex;align-items:center;gap:.5rem;margin:1.4rem auto 0;background:var(--ink);color:var(--bg);border-radius:999px;padding:.62rem 1.3rem;font-family:var(--sans);font-size:.82rem;text-decoration:none;transition:transform .4s var(--ease)}
+  .chip:hover{transform:translateY(-2px)}.chip svg{width:13px;height:13px;fill:currentColor}
+  .mix-foot{text-align:center}
+
+  footer{text-align:center;padding:5rem 0 6rem;color:var(--muted);font-family:var(--sans);font-size:.8rem}
+  footer a{color:var(--seal);text-decoration:none}
+</style>
+</head>
+<body>
+  <nav class="nav"><a href="looks.html">← the looks</a><a href="#dispatch">a dispatch</a></nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <svg class="enso" viewBox="0 0 200 200" aria-hidden="true">
+        <path d="M138 36 a82 82 0 1 0 30 52" stroke-width="7"/>
+      </svg>
+      <h1>A still place to begin.</h1>
+      <p class="lede">A few things, with room to breathe around them. Take your time.</p>
+    </div>
+    <div class="scrollcue">scroll ↓</div>
+  </header>
+
+  <main>
+    <section class="dispatch" id="dispatch"><div class="wrap">
+      <span class="label" data-d="kick"></span>
+      <h2 data-d="title"></h2>
+      <p data-d="stand"></p>
+      <div data-d="body"></div>
+      <p data-d="src"></p>
+      <div class="seal">寿</div>
+    </div></section>
+
+    <div class="divider"></div>
+
+    <section id="read"><div class="wrap">
+      <span class="label sec-label">The reading</span>
+      <div id="reads"></div>
+    </div></section>
+
+    <div class="divider"></div>
+
+    <section id="listen"><div class="wrap">
+      <span class="label sec-label">The listening</span>
+      <div class="player">
+        <div class="l">▶ Playing on this page</div>
+        <iframe src="https://open.spotify.com/embed/episode/1seRMg5Zdg5nBuw0W4Q3WB?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+      <div id="pods"></div>
+      <aside class="mix reveal" id="mix"></aside>
+    </div></section>
+  </main>
+
+  <footer><p>Zen · an aesthetic study. <a href="looks.html">See the others →</a></p></footer>
+
+  <script src="assets/content.js"></script>
+  <script src="assets/reveal.js"></script>
+  <script src="assets/render.js"></script>
+  <script>
+    renderGift();
+    // move the "open the mix" chip into a centered footer wrapper for balance
+    var mix=document.getElementById("mix"); if(mix){var c=mix.querySelector(".play-mix"); if(c){var f=document.createElement("div");f.className="mix-foot";c.parentNode.insertBefore(f,c);f.appendChild(c);}}
+  </script>
+</body>
+</html>

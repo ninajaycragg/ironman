@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>For Dad — choose a way in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..420&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<style>
+  body { min-height: 100vh; }
+  .hero {
+    position: relative; overflow: hidden;
+    padding: clamp(5rem, 14vh, 11rem) 0 clamp(3rem, 8vh, 6rem);
+    text-align: center;
+  }
+  .hero .wrap { position: relative; z-index: 2; }
+  .hero .eyebrow { display: block; margin-bottom: 1.4rem; }
+  .hero h1 { font-size: clamp(3.2rem, 9vw, 7rem); font-weight: 320; }
+  .hero .sub {
+    font-family: var(--read); font-style: italic; font-weight: 320;
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem); color: var(--text-muted);
+    margin: 1.2rem auto 0; max-width: 36ch;
+  }
+  /* mountains/water motif behind the title */
+  .range { position: absolute; left: 0; right: 0; bottom: -1px; z-index: 1; opacity: .9; }
+
+  .pick { padding: clamp(2rem, 6vh, 5rem) 0 clamp(5rem, 12vh, 9rem); }
+  .grid {
+    display: grid; gap: clamp(1rem, 2.4vw, 1.8rem);
+    grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  }
+  .card {
+    position: relative; display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 290px; padding: 1.8rem 1.7rem 1.6rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    text-decoration: none; color: var(--text); overflow: hidden;
+    transition: transform .5s var(--ease-out-soft), box-shadow .5s var(--ease-out-soft), background .5s var(--ease-quiet);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 22px 50px -28px rgba(26,35,54,.45); background: var(--bg); }
+  .card .no { font-family: var(--serif); font-size: 1rem; color: var(--text-muted); }
+  .card h2 { font-size: 1.85rem; margin-top: .4rem; }
+  .card .desc { font-size: .92rem; color: var(--text-muted); line-height: 1.6; margin-top: .7rem; }
+  .card .go { margin-top: 1.4rem; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+  .card .go::after { content: " →"; transition: margin .4s var(--ease-out-soft); display: inline-block; }
+  .card:hover .go::after { margin-left: .35rem; }
+  .card .swatch { position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
+
+  footer { text-align: center; padding: 0 0 4rem; color: var(--text-muted); font-size: .8rem; letter-spacing: .04em; }
+  footer .rule { max-width: 60px; margin: 0 auto 1.4rem; }
+</style>
+</head>
+<body>
+  <header class="hero vignette">
+    <div class="wrap">
+      <span class="eyebrow" id="ed"></span>
+      <h1 class="display">For Dad</h1>
+      <p class="sub">Four small rooms, each holding the same few gifts. Wander into whichever feels right.</p>
+    </div>
+    <svg class="range" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,210 L240,120 L470,205 L700,90 L960,200 L1180,130 L1440,200 L1440,320 L0,320 Z" fill="#3E5C76" opacity="0.28"/>
+      <path d="M0,250 L300,170 L560,250 L820,150 L1080,245 L1300,185 L1440,240 L1440,320 L0,320 Z" fill="#26324A" opacity="0.45"/>
+      <path d="M0,300 L360,250 L720,300 L1080,255 L1440,300 L1440,320 L0,320 Z" fill="#1A2336" opacity="0.7"/>
+    </svg>
+  </header>
+
+  <main class="pick wrap">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <div style="text-align:center;padding:0 0 4rem;display:flex;gap:1.6rem;justify-content:center;flex-wrap:wrap">
+    <a href="looks.html" class="link" style="font-size:.84rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">Four aesthetics →</a>
+    <a href="type.html" class="link" style="font-size:.84rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">Ten typefaces →</a>
+  </div>
+
+  <footer>
+    <hr class="rule" />
+    Made by hand, for you. · <span class="serif-italic" style="font-family:var(--read)">happy birthday</span>
+  </footer>
+
+  <script src="assets/content.js"></script>
+  <script src="assets/reveal.js"></script>
+  <script>
+    document.getElementById("ed").textContent = GIFT.meta.edition + " · a birthday";
+    var concepts = [
+      { href:"study.html", no:"i", name:"The Study", color:"var(--wood)",
+        desc:"A warm, quiet room. A few objects on the desk — open them slowly, no rush." },
+      { href:"ascent.html", no:"ii", name:"The Ascent", color:"var(--slate)",
+        desc:"A climb. Each step a small gift, the view waiting at the summit." },
+      { href:"fieldnotes.html", no:"iii", name:"Field Notes", color:"var(--accent)",
+        desc:"A little magazine made only for you — set in type, like a clipping kept on purpose." },
+      { href:"hub.html", no:"iv", name:"The Hub", color:"var(--accent-deep)",
+        desc:"Dead simple. One tap to listen, one tap to read. Beautiful, mostly useful." },
+    ];
+    var grid = document.getElementById("grid");
+    concepts.forEach(function (c, i) {
+      var a = document.createElement("a");
+      a.href = c.href; a.className = "card reveal"; a.setAttribute("data-delay", i * 90);
+      a.innerHTML =
+        '<span class="swatch" style="background:'+c.color+'"></span>' +
+        '<div><div class="no">'+c.no+'</div><h2>'+c.name+'</h2><p class="desc">'+c.desc+'</p></div>' +
+        '<div class="go">Step in</div>';
+      grid.appendChild(a);
+    });
+    if (window.__initReveals) window.__initReveals();
+  </script>
+</body>
+</html>
