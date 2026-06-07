@@ -62,16 +62,22 @@
     .item .go{grid-row:1;justify-self:start;align-self:baseline;margin-bottom:.55rem;order:-1}
   }
 
-  /* playlist row with peek */
-  .mixrow .tracks{grid-column:1/-1;margin-top:.9rem;columns:2;column-gap:2rem;list-style:none}
-  .mixrow .tracks li{font-size:.86rem;color:var(--muted);padding:.18rem 0;break-inside:avoid}
-  .mixrow .tracks li .n{font-family:var(--mono);font-size:.66rem;color:var(--green);margin-right:.5rem}
-  @media(max-width:560px){.mixrow .tracks{columns:1}}
-
-  /* one inline player */
-  .player{margin-top:1.4rem}
-  .player .pl{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:.7rem}
-  .player iframe{border-radius:12px;display:block;border:1px solid var(--line)}
+  /* ---------- inline players (media) ---------- */
+  .media{padding:1.5rem 0;border-top:1px solid var(--line2)}
+  .media .tag{display:block;margin-bottom:.4rem}
+  .media h3{font-size:1.12rem;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+  .media .sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:.3rem}
+  .media .note{font-size:.95rem;color:var(--muted);margin-top:.45rem;max-width:60ch;line-height:1.5}
+  .media .frame{margin-top:.95rem;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  /* youtube — click-to-load facade keeps the page light */
+  .yt{position:relative;aspect-ratio:16/9;cursor:pointer;background:#0B0C0E}
+  .yt img{width:100%;height:100%;object-fit:cover}
+  .yt iframe{width:100%;height:100%;border:0;display:block}
+  .yt .pbtn{position:absolute;inset:0;margin:auto;width:62px;height:62px;border-radius:50%;
+    background:rgba(11,12,14,.62);display:grid;place-items:center;transition:transform .3s var(--ease),background .3s var(--ease)}
+  .yt:hover .pbtn{background:var(--blue);transform:scale(1.07)}
+  .yt .pbtn svg{width:23px;height:23px;fill:#fff;margin-left:3px}
+  .sp iframe{width:100%;display:block;border:0}
 
   footer{padding:3rem 0 calc(env(safe-area-inset-bottom) + 3.2rem)}
   footer .row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;max-width:760px;margin:0 auto;padding-left:var(--padL);padding-right:var(--padR)}
@@ -120,32 +126,48 @@
       return a;
     }
 
-    // reading
+    var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+
+    // Read — article links
     var reads = document.getElementById("reads");
     G.reads.forEach(function(r){
       reads.appendChild(item({tag:r.vein, title:r.title, sub:r.author+" · "+r.source+" · "+r.year, note:r.note, url:r.url}));
     });
 
-    // sport (hockey first) — reads + a podcast, with one hockey episode playing here
-    var sport = document.getElementById("sport");
-    (G.sports||[]).forEach(function(s){
-      sport.appendChild(item({tag:s.vein, title:s.title, sub:s.author+" · "+s.source+" · "+s.year, note:s.note, url:s.url, audio:s.type==="podcast"}));
-    });
+    // Sport / Listen / Watch — inline players from G.media
+    function mediaCard(m){
+      var card = document.createElement("div");
+      card.className = "media reveal";
+      var head =
+        '<a href="'+(m.platform==="youtube"?"https://www.youtube.com/watch?v="+m.id:"https://open.spotify.com/"+m.kind+"/"+m.id)+'" target="_blank" rel="noopener">' +
+          '<span class="tag">'+m.vein+'</span>' +
+          '<h3>'+m.title+'</h3>' +
+        '</a>' +
+        '<div class="sub">'+m.who+' · '+m.source+' · '+m.year+'</div>' +
+        (m.note ? '<div class="note">'+m.note+'</div>' : '');
+      if (m.platform === "youtube"){
+        card.innerHTML = head +
+          '<div class="frame yt">' +
+            '<img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/hqdefault.jpg" alt="" />' +
+            '<div class="pbtn">'+PLAY+'</div>' +
+          '</div>';
+        var yt = card.querySelector(".yt");
+        yt.addEventListener("click", function(){
+          yt.innerHTML = '<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" title="'+m.title+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+        });
+      } else {
+        var h = (m.kind === "playlist") ? 352 : 152;
+        card.innerHTML = head +
+          '<div class="frame sp"><iframe loading="lazy" src="https://open.spotify.com/embed/'+m.kind+'/'+m.id+'?utm_source=generator" width="100%" height="'+h+'" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></div>';
+      }
+      return card;
+    }
 
-    // listening: podcasts + playlists
-    var listen = document.getElementById("listen");
-    G.listening.podcasts.forEach(function(p){
-      listen.appendChild(item({tag:"Podcast", title:p.title, sub:p.show+" · "+p.who, note:p.note, url:p.url, audio:true}));
-    });
-    var w = G.listening.workout;
-    listen.appendChild(item({tag:"Playlist", title:w.title, sub:w.tracks.length+" tracks · "+w.subtitle, url:w.url, audio:true}));
-    var wd = G.listening.windDown;
-    listen.appendChild(item({tag:"Playlist", title:wd.title, sub:wd.tracks.length+" tracks · "+wd.subtitle, url:"https://open.spotify.com/search/"+encodeURIComponent(wd.tracks[0][1]), audio:true}));
-
-    // watching
-    var watch = document.getElementById("watch");
-    (G.watch||[]).forEach(function(f){
-      watch.appendChild(item({tag:f.vein, title:f.title, sub:f.who+" · "+f.year, note:f.note, url:f.url}));
+    ["sport","listen","watch"].forEach(function(sec){
+      var el = document.getElementById(sec);
+      (G.media||[]).filter(function(m){return m.section===sec;}).forEach(function(m){
+        el.appendChild(mediaCard(m));
+      });
     });
 
     if (window.__initReveals) window.__initReveals();
