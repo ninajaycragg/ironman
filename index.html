@@ -59,6 +59,7 @@
   .top .mark{font-weight:700;font-size:.94rem;letter-spacing:.16em;text-transform:uppercase}
   .top .where{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   .top .intro{margin-top:1.4rem;max-width:52ch}
+  .top .eyebrow{display:block;font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:.85rem}
   .top .ded{display:block;color:var(--ink);font-size:clamp(1.05rem,2.6vw,1.28rem);font-weight:500;line-height:1.42;letter-spacing:-.012em;max-width:30ch}
   .top .exp{display:block;color:var(--muted);font-size:.95rem;line-height:1.55;margin-top:.75rem;max-width:52ch}
   .top .rule{height:1px;background:var(--ink);margin-top:clamp(2.2rem,6vh,3.4rem)}
@@ -78,7 +79,10 @@
   .card{display:block;background:var(--paper);border:1px solid var(--line);border-radius:14px;
     padding:1.5rem 1.6rem;transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease)}
   a.card:hover{transform:translateY(-4px);box-shadow:0 28px 54px -30px rgba(31,79,214,.4);border-color:rgba(31,79,214,.35)}
-  .card .tag{display:block;margin-bottom:.7rem}
+  .card .idx{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.06em;color:var(--faint);margin-right:.7rem}
+  .card .tag{margin-bottom:.7rem}
+  .card .topline{display:flex;align-items:baseline;margin-bottom:.7rem}
+  .card .topline .tag{margin-bottom:0}
   .card h3{font-size:1.26rem;font-weight:600;letter-spacing:-.015em;line-height:1.25}
   a.card:hover h3{color:var(--blue)}
   .card .sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:.45rem}
@@ -125,8 +129,9 @@
   <header class="top">
     <div class="line"><span class="mark">Mike Cragg</span><span class="where">Vancouver · 49.28°N</span></div>
     <p class="intro reveal">
-      <span class="ded">Dad — I love you, I look up to you, and I love the way you see the world.</span>
-      <span class="exp">So here's a place for the things you'd love — to read, hear, and watch. The kind of stuff you're always sending me.</span>
+      <span class="eyebrow">For Dad</span>
+      <span class="ded">A few things I wanted to share with you.</span>
+      <span class="exp">Reading, listening, and watching — gathered across the year. Wander in any order.</span>
     </p>
     <div class="rule reveal"></div>
   </header>
@@ -144,29 +149,29 @@
     var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
     var LIMIT = 4;
 
-    function readCard(r){
+    function readCard(r, idx){
       var a = document.createElement("a");
       a.href = r.url; a.target = "_blank"; a.rel = "noopener"; a.className = "card reveal";
       a.innerHTML =
-        '<span class="tag">'+r.vein+'</span>' +
+        '<div class="topline"><span class="idx">'+idx+'</span><span class="tag">'+r.vein+'</span></div>' +
         '<div class="head"><h3>'+r.title+'</h3><span class="go">Open <span class="ar">→</span></span></div>' +
         '<div class="sub">'+r.author+' · '+r.source+' · '+r.year+'</div>' +
         (r.note ? '<div class="note">'+r.note+'</div>' : '');
       return a;
     }
-    function mediaCard(m){
+    function mediaCard(m, idx){
       var card = document.createElement("div");
       card.className = "card media reveal";
       var link = m.platform==="youtube" ? "https://www.youtube.com/watch?v="+m.id : "https://open.spotify.com/"+m.kind+"/"+m.id;
       var head =
-        '<div class="mhead"><span class="tag">'+m.vein+'</span>' +
+        '<div class="mhead"><div class="topline"><span class="idx">'+idx+'</span><span class="tag">'+m.vein+'</span></div>' +
           '<div class="mtitle"><a href="'+link+'" target="_blank" rel="noopener">'+m.title+'</a></div>' +
           '<div class="sub">'+m.who+' · '+m.source+' · '+m.year+'</div>' +
           (m.note ? '<div class="note">'+m.note+'</div>' : '') + '</div>';
       if (m.platform === "youtube"){
         card.innerHTML = head + '<div class="frame yt"><img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/hqdefault.jpg" alt="" /><div class="pbtn">'+PLAY+'</div></div>';
         var yt = card.querySelector(".yt");
-        yt.addEventListener("click", function(){ yt.innerHTML = '<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" title="'+m.title+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'; });
+        yt.addEventListener("click", function(){ yt.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/'+m.id+'?autoplay=1&rel=0&playsinline=1" title="'+m.title+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'; });
       } else {
         var h = (m.kind === "playlist") ? 352 : 152;
         card.innerHTML = head + '<div class="frame sp"><iframe loading="lazy" src="https://open.spotify.com/embed/'+m.kind+'/'+m.id+'?utm_source=generator" width="100%" height="'+h+'" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></div>';
@@ -192,7 +197,8 @@
         '<div class="cards"></div>';
       var cards = section.querySelector(".cards");
       items.forEach(function(it, i){
-        var card = (it.kind === "read") ? readCard(it) : mediaCard(it);
+        var num = String(i+1).padStart(2,"0");
+        var card = (it.kind === "read") ? readCard(it, num) : mediaCard(it, num);
         card.setAttribute("data-delay", Math.min(i, 5) * 70);
         if (i >= LIMIT) card.classList.add("more-hidden");
         cards.appendChild(card);
